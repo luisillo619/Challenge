@@ -13,6 +13,20 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
   const [currencyData, setCurrencyData] = useState<CurrencyData>({});
 
   const connectWebSocket = () => {
+    // Desconectar el WebSocket actual si existe
+    if (ws.current) {
+      // des subscribirse del anterior
+      let key = Object.keys(currencyData); // EUR-USD
+
+      ws.current.send(
+        JSON.stringify({
+          action: "unsubscribe",
+          pair: key[0],
+        })
+      );
+      ws.current.close();
+    }
+
     const handleSocketMessage = (event: MessageEvent) => {
       const message = event.data;
 
@@ -25,10 +39,9 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
 
       try {
         const messageData = JSON.parse(message);
-        setCurrencyData((prevData) => ({
-          ...prevData,
+        setCurrencyData({
           [messageData.currency]: messageData.point,
-        }));
+        });
       } catch (error) {
         console.error("Error parsing message data:", error);
       }
@@ -39,10 +52,11 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
       ws.current?.send(JSON.stringify({ action: "subscribe", pair }));
     };
     ws.current.onmessage = handleSocketMessage;
+
+    // FALTA EL MANEJO POR SI SE CIERRA
     ws.current.onclose = () => {
-      setTimeout(() => {
-        connectWebSocket();
-      }, 1000);
+      console.log("WebSocket closed");
+      
     };
   };
 
@@ -52,7 +66,7 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
     return () => {
       ws.current?.close();
     };
-  }, []);
+  }, [pair]);
 
   return (
     <>

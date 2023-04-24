@@ -1,8 +1,9 @@
-import ChartComponent from "@/components/Chart/Chart";
+import ChartComponent from "@/components/chart/Chart";
 import axios from "axios";
 import Head from "next/head";
 import type { NextPage } from "next";
-import WebSocketComponent from "@/components/Socket/WebSocket";
+import WebSocketComponent from "@/components/socket/WebSocket";
+import CurrencyExchange from "@/components/currency/CurrencyExchange";
 
 interface CurrencyHistory {
   [key: string]: string;
@@ -22,6 +23,7 @@ const HomePage: NextPage<HomePageProps> = ({ pair, currencyHistory }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       {/* Display the currency data */}
+      <CurrencyExchange pair={pair} />
       <WebSocketComponent pair={pair} />
       <ChartComponent currencyHistory={currencyHistory} />
     </>
@@ -36,7 +38,7 @@ export const getServerSideProps = async ({ query }: any) => {
     const { data: currencyHistory } = await axios(
       `http://67.205.189.142:8000/historic-data/${pair}`
     );
-    console.log(currencyHistory["Time Series FX (Daily)"]);
+    // console.log(currencyHistory["Time Series FX (Daily)"]);
     return {
       props: {
         currencyHistory: currencyHistory["Time Series FX (Daily)"],
@@ -50,4 +52,3 @@ export const getServerSideProps = async ({ query }: any) => {
     },
   };
 };
-//
