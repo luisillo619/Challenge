@@ -1,0 +1,17 @@
+.chart {
+    border: 3px solid red;
+    width:1200px;
+    margin: 0 auto;
+}
+
+.composedChart {
+    /* top: 20px;
+    right: 20px;
+    bottom: 20px;
+    left: 20px; */
+    background: #000;
+}
+.xAxis {
+    margin: 0 20px 0 0;
+    font-Size: "10px";
+}

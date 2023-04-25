@@ -1,0 +1,125 @@
+.webSocketComponent {
+  border: 1px solid #6c757d;
+  width: 100%;
+  padding: 0.625rem 0;
+  font-family: Arial, sans-serif;
+  background: black;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.webSocketComponent__sectionPair {
+  border-left: 0.25rem solid #2a9d8f;
+  width: 20%;
+  padding: 0 0 0 0.725rem;
+  box-sizing: border-box;
+}
+.webSocketComponent__sectionLastUpdate {
+  width: 20%;
+  padding: 0 0 0 0.625rem;
+  box-sizing: border-box;
+}
+
+.webSocketComponent__section {
+  width: 20%;
+  padding: 0 0 0 0.725rem;
+  box-sizing: border-box;
+  border-right: 0.15rem solid #6c757d;
+}
+
+.webSocketComponent__sectionTitlePair {
+  color: #6c757d;
+  font-size: 0.8125rem;
+  width: 5rem;
+  padding: 0 0 0.125rem 0;
+  border-bottom: 0.125rem solid #6c757d;
+  margin: 0 0 0.4375rem 0;
+}
+
+.webSocketComponent__sectionTitle {
+  width: 100%;
+  color: #6c757d;
+  font-size: 0.8125rem;
+  padding: 0 0 0.125rem 0;
+  margin: 0 0 0.4375rem 0;
+}
+
+.webSocketComponent__data {
+  font-size: 1.25rem;
+  color: #dee2e6;
+}
+
+.webSocketComponent__currencyPoint {
+  color: #2a9d8f;
+}
+
+@media screen and (min-width: 481px) and (max-width: 1024px) {
+  .webSocketComponent {
+    justify-content: space-between;
+    padding: 0;
+  }
+
+  .webSocketComponent__section,
+  .webSocketComponent__sectionPair,
+  .webSocketComponent__sectionLastUpdate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 33.33%;
+    padding: 0;
+    border: none;
+    border-bottom: 1px solid #6c757d;
+    border-right: 1px solid #6c757d;
+    border-left: 1px solid #6c757d;
+
+  }
+  .webSocketComponent__sectionTitle,
+  .webSocketComponent__sectionTitlePair {
+    border: none;
+    
+    font-size: 0.6525rem;
+    text-align: center;
+  }
+  .webSocketComponent__data {
+    text-align: center;
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .webSocketComponent {
+    padding: 0;
+    flex-direction: column;
+  }
+
+  .webSocketComponent__section,
+  .webSocketComponent__sectionPair,
+  .webSocketComponent__sectionLastUpdate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #6c757d;
+    
+  }
+  
+  .webSocketComponent__section:last-child {
+    border-bottom: none;
+  }
+
+  .webSocketComponent__sectionTitle,
+  .webSocketComponent__sectionTitlePair {
+    border: none;
+    font-size: 0.6525rem;
+    text-align: center;
+  }
+  
+  .webSocketComponent__data {
+    text-align: center;
+    font-size: 1rem;
+  }
+}
