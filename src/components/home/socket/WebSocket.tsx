@@ -206,6 +206,4 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
 
 export default WebSocketComponent;
 
-// cuando se utilizaba onmessage, las instancias no se eliminaban completamente porque el manejador de eventos seguía vinculado al socket, incluso después de llamar a socket.close(). Esto provocaba que los manejadores de eventos siguieran escuchando los eventos del socket cerrado, lo que podría causar problemas, como múltiples instancias activas y mensajes recibidos de pares de monedas anteriores.
 
-// Ahora, al utilizar addEventListener y removeEventListener, puedes controlar mejor la vinculación y desvinculación de los manejadores de eventos. Antes de llamar a socket.close(), puedes eliminar explícitamente el manejador de eventos utilizando removeEventListener. De esta manera, el manejador de eventos se desvincula correctamente del socket antes de cerrarlo, lo que evita que se mantengan múltiples instancias activas del socket y garantiza que socket.close() funcione correctamente.
