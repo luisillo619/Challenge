@@ -2,6 +2,7 @@ import axios from "axios";
 import Head from "next/head";
 import type { NextPage, GetServerSidePropsContext } from "next";
 import HomeComponent from "@/components/home/HomeComponent";
+import CurrencyExchange from "@/components/home/currency/currencyExchange/CurrencyExchange";
 
 interface CurrencyHistory {
   date: string;
@@ -40,7 +41,7 @@ export default HomePage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { pair } = context.query;
-  if (pair && typeof pair === "string") {
+  if (pair && typeof pair === "string" && (pair === "USDMXN" || pair === "EURUSD" || pair === "EURCHF") ) {
     const { data: currencyHistory } = await axios(
       `http://67.205.189.142:8000/historic-data/${pair}`
     );
@@ -70,7 +71,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
   return {
     props: {
-      pair: "EURUSD",
+      pair: "",
       currencyHistory: [],
     },
   };

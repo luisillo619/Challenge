@@ -22,21 +22,25 @@ interface HomePageProps {
 const HomeComponent: NextPage<HomePageProps> = ({ currencyHistory, pair }) => {
   return (
     <div className={styles.homeComponent}>
-      <div className={styles.homeComponent__content}>
-        <div className={styles.currencyExchangeComponent}>
+      {currencyHistory && pair ? (
+        <div className={styles.homeComponent__content}>
+          <div className={styles.currencyExchangeComponent}>
+            <CurrencyExchange pair={pair} />
+          </div>
+          <div className={styles.webSocketComponent}>
+            <WebSocketComponent pair={pair} />
+          </div>
+
+          <div className={styles.Historic_Daily_Components}>
+            <HistoricPrice currencyHistory={currencyHistory} />
+            <DailyTrend currencyHistory={currencyHistory} />
+          </div>
+        </div>
+      ) : (
+        <>
           <CurrencyExchange pair={pair} />
-        </div>
-        <div className={styles.webSocketComponent}>
-          <WebSocketComponent pair={pair} />
-        </div>
-
-        <div className={styles.Historic_Daily_Components}>
-          <HistoricPrice currencyHistory={currencyHistory} />
-          <DailyTrend currencyHistory={currencyHistory} />
-        </div>
-
-        {/* <ChartComponent currencyHistory={currencyHistory} /> */}
-      </div>
+        </>
+      )}
     </div>
   );
 };
