@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 const WEBSOCKET_URL = "ws://67.205.189.142:8000/websockets/";
 const RECONNECTION_INTERVAL = 4000;
 const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
+const DATE_FORMAT_MEDIA_QUERY = "DD/MM/YY HH:mm:ss";
 
 interface WebSocketComponentProps {
   pair: string;
@@ -117,7 +118,26 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
   }, [pair]);
 
   useEffect(() => {
-    setFormattedLastResponse(moment.utc(lastResponse).format(DATE_FORMAT));
+    const mediaQuery = window.matchMedia(
+      "(min-width: 481px) and (max-width: 1024px)"
+    );
+    const updateDateFormat = () => {
+      if (mediaQuery.matches) {
+        setFormattedLastResponse(
+          moment.utc(lastResponse).format(DATE_FORMAT_MEDIA_QUERY)
+        );
+      } else {
+        setFormattedLastResponse(moment.utc(lastResponse).format(DATE_FORMAT));
+      }
+    };
+
+    updateDateFormat(); // actualiza el formato de fecha cuando el componente se monta
+
+    mediaQuery.addEventListener("change", updateDateFormat); // actualiza el formato de fecha cuando cambia el media query
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateDateFormat); // elimina el listener cuando el componente se desmonta
+    };
   }, [lastResponse]);
 
   useEffect(() => {
@@ -144,33 +164,41 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
 
   return (
     <div className={styles.webSocketComponent}>
-      <div className={styles.current}>
-        <div className={styles.currency}>
-          <p className={styles.currencyTitle}>Currency Pair</p>
-          <p className={styles.currencyPair}>{pair}</p>
-        </div>
-
-        <div className={styles.point}>
-          <p className={styles.datesTitle}>Current Exchange-Rate Today</p>
-          <p className={styles.currencyPoint}>
-            {currencyData.point.toFixed(4)}
-          </p>
-        </div>
-
-        <div className={styles.dates}>
-          <p className={styles.datesTitle}>Highest Exchange-Rate Today</p>
-          <p className={styles.datesPrice}>{highest?.toFixed(4)}</p>
-        </div>
-
-        <div className={styles.dates}>
-          <p className={styles.datesTitle}>Lowest Exchange-Rate Today</p>
-          <p className={styles.datesPrice}>{lowest?.toFixed(4)}</p>
-        </div>
-
-        <div className={styles.dates}>
-          <p className={styles.datesTitle}>Last Update (UTC)</p>
-          <p className={styles.datesPrice}>{formattedLastResponse}</p>
-        </div>
+      <div className={styles.webSocketComponent__sectionPair}>
+        <p className={styles.webSocketComponent__sectionTitlePair}>
+          Currency Pair
+        </p>
+        <p className={styles.webSocketComponent__data}>{pair}</p>
+      </div>
+      <div className={styles.webSocketComponent__section}>
+        <p className={styles.webSocketComponent__sectionTitle}>
+          Current Exchange-Rate Today
+        </p>
+        <p
+          className={`${styles.webSocketComponent__data} ${styles.webSocketComponent__currencyPoint}`}
+        >
+          {currencyData.point.toFixed(4)}
+        </p>
+      </div>
+      <div className={styles.webSocketComponent__section}>
+        <p className={styles.webSocketComponent__sectionTitle}>
+          Highest Exchange-Rate Today
+        </p>
+        <p className={styles.webSocketComponent__data}>{highest?.toFixed(4)}</p>
+      </div>
+      <div className={styles.webSocketComponent__section}>
+        <p className={styles.webSocketComponent__sectionTitle}>
+          Lowest Exchange-Rate Today
+        </p>
+        <p className={styles.webSocketComponent__data}>{lowest?.toFixed(4)}</p>
+      </div>
+      <div className={styles.webSocketComponent__sectionLastUpdate}>
+        <p className={styles.webSocketComponent__sectionTitle}>
+          Last Update (UTC)
+        </p>
+        <p className={styles.webSocketComponent__data}>
+          {formattedLastResponse}
+        </p>
       </div>
     </div>
   );
@@ -178,4 +206,6 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
 
 export default WebSocketComponent;
 
+// cuando se utilizaba onmessage, las instancias no se eliminaban completamente porque el manejador de eventos seguía vinculado al socket, incluso después de llamar a socket.close(). Esto provocaba que los manejadores de eventos siguieran escuchando los eventos del socket cerrado, lo que podría causar problemas, como múltiples instancias activas y mensajes recibidos de pares de monedas anteriores.
 
+// Ahora, al utilizar addEventListener y removeEventListener, puedes controlar mejor la vinculación y desvinculación de los manejadores de eventos. Antes de llamar a socket.close(), puedes eliminar explícitamente el manejador de eventos utilizando removeEventListener. De esta manera, el manejador de eventos se desvincula correctamente del socket antes de cerrarlo, lo que evita que se mantengan múltiples instancias activas del socket y garantiza que socket.close() funcione correctamente.
