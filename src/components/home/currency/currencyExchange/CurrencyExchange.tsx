@@ -15,7 +15,7 @@ const CurrencyExchange: React.FC<CurrencyExchangeProps> = ({ pair }) => {
       const queryParams = new URLSearchParams(window.location.search);
       queryParams.set("pair", selectedPair);
       const newPath = `${window.location.origin}?${queryParams.toString()}`;
-      router.replace(newPath);
+      router.push(newPath);
     }
   };
 
