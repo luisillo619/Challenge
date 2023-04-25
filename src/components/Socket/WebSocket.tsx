@@ -28,6 +28,9 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
   const [lastResponse, setLastResponse] = useState<number>(Date.now());
   const [formattedLastResponse, setFormattedLastResponse] =
     useState<string>("");
+  const [highest, setHighest] = useState<number | null>(null);
+  const [lowest, setLowest] = useState<number | null>(null);
+  const [initialPairState, setInitialPairState] = useState<boolean>(true);
 
   const createWebSocket = (): CustomWebSocket => {
     const socket = new WebSocket(WEBSOCKET_URL) as CustomWebSocket;
@@ -37,12 +40,12 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
   const handleMessage = (event: MessageEvent) => {
     const message = event.data;
     if (!message.startsWith("{")) return;
-    // console.log(message);
     const messageData = JSON.parse(message);
     setCurrencyData({
       currency: messageData.currency,
       point: messageData.point,
     });
+
     setLastResponse(Date.now());
   };
 
@@ -109,12 +112,35 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
         socketRef.current.removeEventListener("message", handleMessage);
         reconnect(socketRef.current);
       }
+      setInitialPairState(true);
     };
   }, [pair]);
 
   useEffect(() => {
     setFormattedLastResponse(moment.utc(lastResponse).format(DATE_FORMAT));
   }, [lastResponse]);
+
+  useEffect(() => {
+    if (currencyData.point !== 0) {
+      if (initialPairState) {
+        // cada que hay un cambio en pair entra aqui en la primera vuelta
+        setHighest(currencyData.point);
+        setLowest(currencyData.point);
+        setInitialPairState(false);
+      } else {
+        setHighest((prevHighest) =>
+          prevHighest === null || currencyData.point > prevHighest
+            ? currencyData.point
+            : prevHighest
+        );
+        setLowest((prevLowest) =>
+          prevLowest === null || currencyData.point < prevLowest
+            ? currencyData.point
+            : prevLowest
+        );
+      }
+    }
+  }, [currencyData.point, initialPairState]);
 
   return (
     <div className={styles.webSocketComponent}>
@@ -127,18 +153,18 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
         <div className={styles.point}>
           <p className={styles.datesTitle}>Current Exchange-Rate Today</p>
           <p className={styles.currencyPoint}>
-            {Number(currencyData.point).toFixed(4)}{" "}
+            {currencyData.point.toFixed(4)}
           </p>
         </div>
 
         <div className={styles.dates}>
           <p className={styles.datesTitle}>Highest Exchange-Rate Today</p>
-          <p className={styles.datesPrice}>Alto</p>
+          <p className={styles.datesPrice}>{highest?.toFixed(4)}</p>
         </div>
 
         <div className={styles.dates}>
           <p className={styles.datesTitle}>Lowest Exchange-Rate Today</p>
-          <p className={styles.datesPrice}>Bajo</p>
+          <p className={styles.datesPrice}>{lowest?.toFixed(4)}</p>
         </div>
 
         <div className={styles.dates}>
