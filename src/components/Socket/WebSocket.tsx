@@ -1,68 +1,155 @@
-import { useEffect, useRef, useState } from "react";
+import styles from "./WebSocket.module.css";
+import moment from "moment";
+import React, { useEffect, useRef, useState } from "react";
+
+const WEBSOCKET_URL = "ws://67.205.189.142:8000/websockets/";
+const RECONNECTION_INTERVAL = 4000;
+const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
 
 interface WebSocketComponentProps {
   pair: string;
 }
 
 interface CurrencyData {
-  [key: string]: string;
+  currency: string;
+  point: number;
+}
+
+interface CustomWebSocket extends WebSocket {
+  pair: string;
 }
 
 const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
-  const ws = useRef<WebSocket | null>(null);
-  const [currencyData, setCurrencyData] = useState<CurrencyData>({});
+  const socketRef = useRef<CustomWebSocket | null>(null);
+  const [currencyData, setCurrencyData] = useState<CurrencyData>({
+    currency: "",
+    point: 0,
+  });
+  const [lastResponse, setLastResponse] = useState<number>(Date.now());
+  const [formattedLastResponse, setFormattedLastResponse] =
+    useState<string>("");
 
-  const connectWebSocket = () => {
-    const handleSocketMessage = (event: MessageEvent) => {
-      const message = event.data;
+  const createWebSocket = (): CustomWebSocket => {
+    const socket = new WebSocket(WEBSOCKET_URL) as CustomWebSocket;
+    return socket;
+  };
 
-      if (!message.startsWith("{")) {
-        console.log("Invalid message:", message);
-        return;
-      }
+  const handleMessage = (event: MessageEvent) => {
+    const message = event.data;
+    if (!message.startsWith("{")) return;
+    // console.log(message);
+    const messageData = JSON.parse(message);
+    setCurrencyData({
+      currency: messageData.currency,
+      point: messageData.point,
+    });
+    setLastResponse(Date.now());
+  };
 
-      console.log(message);
+  const sendUnsubscribeMessage = (socket: CustomWebSocket) => {
+    const message = JSON.stringify({
+      action: "unsubscribe",
+      pair: socket.pair,
+    });
+    socket.send(message);
+  };
 
-      try {
-        const messageData = JSON.parse(message);
-        setCurrencyData((prevData) => ({
-          ...prevData,
-          [messageData.currency]: messageData.point,
-        }));
-      } catch (error) {
-        console.error("Error parsing message data:", error);
-      }
-    };
+  const reconnect = (socket: CustomWebSocket | null) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      sendUnsubscribeMessage(socket);
+      socket.close();
+    }
+    socketRef.current = null;
+  };
 
-    ws.current = new WebSocket("ws://67.205.189.142:8000/websockets/");
-    ws.current.onopen = () => {
-      ws.current?.send(JSON.stringify({ action: "subscribe", pair }));
-    };
-    ws.current.onmessage = handleSocketMessage;
-    ws.current.onclose = () => {
-      setTimeout(() => {
-        connectWebSocket();
-      }, 1000);
-    };
+  const subscribeToPair = (socket: CustomWebSocket, pair: string) => {
+    const message = JSON.stringify({ action: "subscribe", pair });
+    socket.send(message);
+  };
+
+  const setupWebSocket = (pair: string) => {
+    const socket = createWebSocket();
+    socket.pair = pair;
+
+    socket.addEventListener("open", () => {
+      subscribeToPair(socket, pair);
+    });
+
+    socket.addEventListener("message", handleMessage);
+    socket.addEventListener("error", (error) => console.error("Error:", error));
+    socket.addEventListener("close", (event) =>
+      console.log("Conexión cerrada:", event.code, event.reason)
+    );
+
+    return socket;
   };
 
   useEffect(() => {
-    connectWebSocket();
+    const checkConnectionAndReconnect = () => {
+      if (
+        !socketRef.current ||
+        socketRef.current.readyState !== WebSocket.OPEN
+      ) {
+        console.log("Reconectando...");
+        reconnect(socketRef.current);
+        socketRef.current = setupWebSocket(pair);
+      }
+    };
+
+    socketRef.current = setupWebSocket(pair);
+
+    const checkConnectionInterval = setInterval(
+      checkConnectionAndReconnect,
+      RECONNECTION_INTERVAL
+    );
 
     return () => {
-      ws.current?.close();
+      clearInterval(checkConnectionInterval);
+      if (socketRef.current) {
+        socketRef.current.removeEventListener("message", handleMessage);
+        reconnect(socketRef.current);
+      }
     };
-  }, []);
+  }, [pair]);
+
+  useEffect(() => {
+    setFormattedLastResponse(moment.utc(lastResponse).format(DATE_FORMAT));
+  }, [lastResponse]);
 
   return (
-    <>
-      {Object.entries(currencyData).map(([currency, point]) => (
-        <div key={currency}>
-          {currency}: {point}
+    <div className={styles.webSocketComponent}>
+      <div className={styles.current}>
+        <div className={styles.currency}>
+          <p className={styles.currencyTitle}>Currency Pair</p>
+          <p className={styles.currencyPair}>{pair}</p>
         </div>
-      ))}
-    </>
+
+        <div className={styles.point}>
+          <p className={styles.datesTitle}>Current Exchange-Rate Today</p>
+          <p className={styles.currencyPoint}>
+            {Number(currencyData.point).toFixed(4)}{" "}
+          </p>
+        </div>
+
+        <div className={styles.dates}>
+          <p className={styles.datesTitle}>Highest Exchange-Rate Today</p>
+          <p className={styles.datesPrice}>Alto</p>
+        </div>
+
+        <div className={styles.dates}>
+          <p className={styles.datesTitle}>Lowest Exchange-Rate Today</p>
+          <p className={styles.datesPrice}>Bajo</p>
+        </div>
+
+        <div className={styles.dates}>
+          <p className={styles.datesTitle}>Last Update (UTC)</p>
+          <p className={styles.datesPrice}>{formattedLastResponse}</p>
+        </div>
+      </div>
+    </div>
   );
 };
 
 export default WebSocketComponent;
+
+

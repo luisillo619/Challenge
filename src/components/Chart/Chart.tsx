@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React from "react";
 import {
   ComposedChart,
   Bar,
@@ -47,16 +47,14 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
       };
     });
 
-  const [data] = useState<HistoryDataItem[]>(historyData);
-
   const getPriceDomain = (): [number, number] => {
-    const minPrice = Math.min(...data.map((item) => item.close));
-    const maxPrice = Math.max(...data.map((item) => item.close));
+    const minPrice = Math.min(...historyData.map((item) => item.close));
+    const maxPrice = Math.max(...historyData.map((item) => item.close));
     const padding = (maxPrice - minPrice) * 0.1;
     return [minPrice - padding, maxPrice + padding];
   };
 
-  const dataWithFullBar = data.map((item) => ({
+  const dataWithFullBar = historyData.map((item) => ({
     ...item,
     fullBar: getPriceDomain()[1],
   }));
@@ -105,7 +103,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
           tickFormatter={formatYAxisTicks}
           orientation="right"
         />
-        <Tooltip // evita errores de typescript, de todos modos estos datos no los toma en cuenta customTooltip
+        <Tooltip
           content={<CustomTooltip active={false} payload={[]} label={""} />}
         />
         {/* <Legend /> */}
@@ -115,8 +113,8 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
           dataKey="date"
           height={30}
           stroke="#ff7300"
-          startIndex={data.length - 25}
-          endIndex={data.length - 1}
+          startIndex={dataWithFullBar.length - 25}
+          endIndex={dataWithFullBar.length - 1}
           tickFormatter={formatDate}
         />
       </ComposedChart>
