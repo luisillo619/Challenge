@@ -174,7 +174,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
             height={12}
             stroke="#8884d8"
             travellerWidth={15}
-            y={450}
+            y={200}
           /> */}
           <ReferenceLine
             x={
