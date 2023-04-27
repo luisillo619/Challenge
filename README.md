@@ -1,38 +1,23 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<h1 align="center" style="color: #3a86ff; font-weight: bold;">📌 Currency Pair Web Application</h1>
+<p>Welcome to the Currency Pair web application! This user-friendly application allows you to monitor live prices, historical trends, and daily price movements for four currency pairs, all powered by the C*i*c*a*d*a Challenge API. Developed with Next.js and TypeScript, this scalable project ensures an optimal experience for its users. With a 100% responsive design, the app provides seamless functionality across various devices.</p>
+<h2 style="color: #3a86ff;">🌟 Features</h2>
+<ol>
+  <li>Intuitive selection of the currency pair to be consulted.</li>
+  <li>Real-time display of currency pair information, including:
+    <ul>
+      <li>Selected currency pair</li>
+      <li>Current price</li>
+      <li>Daily high and low prices</li>
+      <li>Current date and time</li>
+    </ul>
+    The app offers live updates every 3 seconds, enabled by WebSocket technology. The robust codebase is designed to handle potential connection drops and automatically reconnects when necessary, ensuring continuous data streaming.
+  </li>
+  <li>Access to price history and in-depth analysis of daily trends for previous dates, including a historical price trend chart that displays data on a monthly basis. Each month contains corresponding dates for enhanced readability and user comprehension.</li>
+</ol>
+<h2 style="color: #3a86ff;">💻 Configuration and Project Execution</h2>
+<p>To set up and run the project, follow these steps:</p>
+<ol>
+  <li>Clone the repository.</li>
+  <li>Install the necessary dependencies by running <code>npm i</code>.</li>
+  <li>Start the development server by running <code>npm run dev</code>. This command ensures that the app is automatically reloaded every time you save any code changes.</li>
+</ol>

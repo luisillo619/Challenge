@@ -18,34 +18,45 @@ interface CurrencyHistory {
 interface HomePageProps {
   pair: string;
   currencyHistory: CurrencyHistory[];
+  error?: string;
 }
 
-const HomeComponent: NextPage<HomePageProps> = ({ currencyHistory, pair }) => {
+const HomeComponent: NextPage<HomePageProps> = ({
+  currencyHistory,
+  pair,
+  error,
+}) => {
   return (
-    <div className={styles.homeComponent}>
+    <>
       {currencyHistory && pair ? (
-        <div className={styles.homeComponent__content}>
-          <div className={styles.currencyExchangeComponent}>
-            <CurrencyExchange pair={pair} />
-          </div>
-          <div className={styles.webSocketComponent}>
-            <WebSocketComponent pair={pair} />
-          </div>
+        <div className={styles.home}>
+          <div className={styles.home__content}>
+            <div className={styles.home__currencyExchange}>
+              <CurrencyExchange pair={pair} />
+            </div>
+            <div className={styles.home__webSocket}>
+              <WebSocketComponent pair={pair} />
+            </div>
 
-          <div className={styles.Historic_Daily_Components}>
-            <HistoricPrice currencyHistory={currencyHistory} />
-            <DailyTrend currencyHistory={currencyHistory} />
-          </div>
-          <div className={styles.charComponent}>
-            <Chart currencyHistory={currencyHistory}/>
+            <div className={styles.home__historicDaily}>
+              <HistoricPrice currencyHistory={currencyHistory} />
+              <DailyTrend currencyHistory={currencyHistory} />
+            </div>
+            <div className={styles.home__chart}>
+              <Chart currencyHistory={currencyHistory} />
+            </div>
           </div>
         </div>
       ) : (
-        <>
-          <CurrencyExchange pair={pair} />
-        </>
+        <div className={styles.home__only}>
+          <h1>{error ? error : null}</h1>
+
+          <div className={styles.home__only_CurrencyExchange}>
+            <CurrencyExchange pair={pair} />
+          </div>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
