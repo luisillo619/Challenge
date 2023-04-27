@@ -1,72 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap');
+
 /* Contenedor principal */
 .dailyTrend {
   width: 100%;
   background: #202737;
-  padding-bottom: 0.5rem;
+  min-height: 100%;
 }
 
 /* Título */
 .dailyTrend__title {
-  height: 3.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 0 1rem;
+  font-size: 0.8rem;
+  color: #ffffff;
+  padding: 1rem;
+  font-family: 'Roboto', sans-serif;
+
 }
 
 /* Tabla */
 .dailyTrend__table {
   color: white;
   background: #2e3748;
+  overflow: hidden;
+  
 }
 
 /* Títulos de las columnas */
 .dailyTrend__tableTitles {
-  margin: 0 1rem;
-  display: flex;
-    align-items: flex-end;
-
-  padding-bottom: .5rem;
-  height: 3.75rem;
-  border-bottom: 1px solid white;
-  width: 93%; /*gracias a la barra de  scroll*/
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.8rem;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  padding: 1.5rem 1rem 0rem 1rem;
+  background-color: #2e3748;
+  margin-right: 0.3rem; /*Distancia para compensar el ancho del scroll*/
+  
 }
 
-.dailyTrend__tableTitlesColumn {
-  text-align: start;
-  flex: 1;
+.dailyTrend__tableTitlesColumnDate {
+  text-align: left;
+  border-bottom: 1px solid #ffffff;
+  
 }
 
 .dailyTrend__tableTitlesColumnRight {
-  text-align: end;
+  text-align: right;
+  border-bottom: 1px solid #ffffff;
+  padding-bottom: 10px;
 }
 
 /* Filas */
 .dailyTrend__tableRows {
-  padding: 0 1rem;
-  padding-bottom: 1rem;
-  background: black;
+  background-color: #000000;
+  max-height: 11.5rem;
   overflow-y: scroll;
-  height: 11.5rem;
+  overflow-x: hidden;
+
+  padding: 0 0 1rem 0;
+  
 }
 
 .dailyTrend__tableRow {
-  display: flex;
-  align-items: center;
-  height: 1.9rem;
-  border-bottom: 0.0625rem solid #adb5bd;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  padding: 0.3rem 1rem;
+  font-size: 0.8rem;
+  font-family: 'Roboto', sans-serif;
 }
 
-.dailyTrend__tableRowColumn {
-  text-align: start;
-  flex: 1;
+.dailyTrend__tableRow:last-child {
+  border-bottom: none;
+}
+
+.dailyTrend__tableRowColumnDate {
+  text-align: left;
+  border-bottom: 1px solid #adb5bd;
+  padding-bottom: 10px;
 }
 
 .dailyTrend__tableRowColumnRight {
-  text-align: end;
+  text-align: right;
+  border-bottom: 1px solid #adb5bd;
+  padding-bottom: 10px;
 }
 
-/* Estilos para las diferencias */
 .dailyTrend__red {
   color: #ad4747;
 }
@@ -75,23 +91,45 @@
   color: #00daa8;
 }
 
-/* Media query para dispositivos con pantalla pequeña (hasta 480px) */
 @media screen and (max-width: 480px) {
   .dailyTrend__title {
-    font-size: 0.875rem;
+    font-size: 1rem;
+    padding: 0.5rem;
   }
 
-  .dailyTrend__tableTitlesColumn,
-  .dailyTrend__tableRowColumn {
-    font-size: 0.75rem;
+  .dailyTrend__tableTitles {
+    font-size: 0.7rem;
+    padding: .5rem;
   }
+
+  .dailyTrend__tableRow {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    
+  }
+ 
 }
 
-/* Media query para dispositivos con pantalla mediana (de 481px a 1024px) */
+
 @media screen and (min-width: 481px) and (max-width: 1024px) {
-  .dailyTrend__tableTitlesColumn,
-  .dailyTrend__tableRowColumn {
-    font-size: 0.8125rem;
+  .dailyTrend__title {
+    font-size: 1.2rem;
+    padding: 0.75rem;
+   
+  }
+
+  .dailyTrend__tableTitles {
+    font-size: 0.9rem;
+    padding: 1.25rem 1rem;
+  }
+
+  .dailyTrend__tableRow {
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+  }
+
+  .dailyTrend__tableRows {
+    max-height: 15rem;
   }
 }
 

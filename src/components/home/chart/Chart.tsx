@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -7,10 +7,11 @@ import {
   Tooltip,
   ReferenceLine,
   ResponsiveContainer,
-  Brush,
   CartesianGrid,
+  Brush,
 } from "recharts";
 import moment from "moment";
+import styles from "./Chart.module.css";
 
 interface CurrencyHistory {
   date: string;
@@ -30,8 +31,8 @@ const CustomTooltip = ({ active, payload }: any) => {
     const closingPrice = payload[0].value;
     return (
       <div className="custom-tooltip">
-        <p className="label">{`Fecha: ${date}`}</p>
-        <p className="label">{`Precio de corte: ${closingPrice}`}</p>
+        <p className="label">{`Date: ${date}`}</p>
+        <p className="label">{`Close: ${closingPrice}`}</p>
       </div>
     );
   }
@@ -40,13 +41,21 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
-  const reversedCurrencyHistory = [...currencyHistory].reverse();
-  const formattedCurrencyHistory = reversedCurrencyHistory.map((entry) => ({
-    ...entry,
-    close: parseFloat(entry.close),
-  }));
+  const reversedCurrencyHistory = useMemo(
+    () => [...currencyHistory].reverse(),
+    [currencyHistory]
+  );
+  const formattedCurrencyHistory = useMemo(
+    () =>
+      reversedCurrencyHistory.map((entry) => ({
+        ...entry,
+        close: parseFloat(entry.close),
+      })),
+    [reversedCurrencyHistory]
+  );
+  
 
-  const renderMonthLines = () => {
+  const monthLines = useMemo(() => {
     const monthIndices: number[] = [];
     let lastMonth = moment(formattedCurrencyHistory[0].date).month();
 
@@ -74,58 +83,103 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
               value: month,
               fill: "#FFFFFF",
               dy: 5,
+              dx: 15,
             }}
           />
         </Fragment>
       );
     });
+  }, [formattedCurrencyHistory]);
+
+  const yDomain = useMemo(() => {
+    const prices = formattedCurrencyHistory.map((entry) => entry.close);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    const lowerLimit = minPrice * 0.9;
+    const upperLimit = maxPrice * 1.1;
+    return [lowerLimit, upperLimit];
+  }, [formattedCurrencyHistory]);
+
+  const lastClosePrice = useMemo(() => {
+    const lastEntry =
+      formattedCurrencyHistory[formattedCurrencyHistory.length - 1];
+    return lastEntry.close;
+  }, [formattedCurrencyHistory]);
+
+  const generateCustomYTicks = (
+    min: number,
+    max: number,
+    tickCount: number,
+    lastPrice: number
+  ): number[] => {
+    const interval = (max - min) / (tickCount - 1);
+    const ticks = Array.from(
+      { length: tickCount },
+      (_, i) => min + interval * i
+    );
+    const lastPriceIndex = ticks.findIndex((tick) => tick > lastPrice);
+
+    if (lastPriceIndex === -1) {
+      ticks.push(lastPrice);
+    } else {
+      ticks.splice(lastPriceIndex, 0, lastPrice);
+    }
+
+    return ticks;
   };
 
-  const renderLastPointReferenceLine = () => {
-    const lastPoint =
-      formattedCurrencyHistory[formattedCurrencyHistory.length - 1];
-    return <ReferenceLine y={lastPoint.close} stroke="#776526" />;
-  };
+  const yAxisTicks = useMemo(() => {
+    const tickCount = 6;
+    return generateCustomYTicks(
+      yDomain[0],
+      yDomain[1],
+      tickCount,
+      lastClosePrice
+    );
+  }, [yDomain, lastClosePrice]);
 
   return (
-    <div style={{ height: 320, background: "black", width: "100%" }}>
+    <div className={styles.chart}>
       <ResponsiveContainer>
         <LineChart
           data={formattedCurrencyHistory}
           margin={{
             top: 5,
-            right: 20,
-            left: 20,
+            right: 10,
+            left: 10,
             bottom: 40,
           }}
         >
           <XAxis dataKey="date" hide />
           <YAxis
-            domain={["dataMin", "dataMax"]}
+            domain={yDomain}
             orientation="right"
-            tickLine={false}
-            axisLine={false}
+            tickFormatter={(tick) => tick.toFixed(2)}
+            ticks={yAxisTicks}
+            style={{ fontSize: '10px' }}
+            width={20}
           />
-          <CartesianGrid
-            horizontal={true}
-            vertical={false}
-            strokeDasharray="3 3"
-          />
-          <Tooltip content={<CustomTooltip />} />
-          {renderMonthLines()}
-          {renderLastPointReferenceLine()}
+          <CartesianGrid horizontal={true} vertical={false} />
+          <Tooltip content={<CustomTooltip />} isAnimationActive={false} />
+          {monthLines}
           <Line
             type="monotone"
             dataKey="close"
-            stroke="#766526"
+            stroke="#886516"
             isAnimationActive={false}
+            dot={false}
           />
-          <Brush
+           {/* <Brush
             dataKey="date"
             height={12}
             stroke="#8884d8"
             travellerWidth={15}
-            y={300}
+            y={450}
+          /> */}
+          <ReferenceLine
+            x={
+              formattedCurrencyHistory[formattedCurrencyHistory.length - 1].date
+            }
           />
         </LineChart>
       </ResponsiveContainer>
@@ -133,4 +187,3 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
   );
 };
 export default ChartComponent;
-
