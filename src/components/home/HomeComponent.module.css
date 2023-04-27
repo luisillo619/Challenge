@@ -1,30 +1,78 @@
-.homeComponent {
+.home {
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: 1100px;
+}
+.home__only {
+  width: 100%;
   height: 100vh;
-}
-
-.homeComponent__content {
-  width: 95%;
-  max-width: 1200px;
-  height: 100%;
- 
-}
-
-.currencyExchangeComponent {
-
-}
-
-.webSocketComponent{
-
-}
-
-.chartComponent{
-  
-}
-
-.Historic_Daily_Components{
   display: flex;
-  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 3rem;
+}
+.home__only > h1 {
+  font-size: 2rem;
+  text-align: center;
+  color: #ffffffd5;
+}
+
+.home__content {
+  width: 90%;
+  height: 100%;
+  max-width: 1200px;
+}
+
+.home__currencyExchange {
+  margin: 2% 0 0 0;
+}
+
+.home__webSocket {
+  margin: 3% 0 0 0;
+}
+
+.home__historicDaily {
+  margin: 5% 0 0 0;
+  display: flex;
+  gap: 2rem;
+}
+
+.home__chart {
+  height: 40%;
+  margin: 7% 0 0 0;
+}
+
+@media screen and (min-width: 481px) and (max-width: 1024px) {
+  .home {
+    height: 1800px;
+  }
+  .home__content {
+    width: 95%;
+  }
+  .home__historicDaily {
+    flex-direction: column;
+  }
+}
+@media screen and (max-width: 480px) {
+  .home {
+    height: 1800px;
+  }
+  .home__content {
+    width: 100%;
+  }
+  .home__historicDaily {
+    flex-direction: column;
+  }
+  .home__only > h1{
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 370px) {
+  .home__only_CurrencyExchange {
+    width: 100%;
+  }
 }

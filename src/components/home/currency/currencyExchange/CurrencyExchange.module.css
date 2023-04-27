@@ -3,8 +3,8 @@
   width: 100%;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 10px;
+  height: 100%;
 }
 
 /* Estilo base para los botones de pares de divisas */
@@ -15,8 +15,7 @@
   cursor: pointer;
   font-size: 0.875rem;
   background: #1f2836;
-  color: #979ea5; 
-
+  color: #979ea5;
 }
 
 /* Estilo activo para el botón del par de divisas seleccionado */
@@ -26,11 +25,8 @@
   background: #2e3748;
 }
 
-/* Media query para dispositivos con pantalla pequeña (hasta 480px) */
+
 @media screen and (max-width: 480px) {
-  .currencyExchange {
-    justify-content: center;
-  }
   .currencyExchange__buttonPair {
     font-size: 0.75rem;
     height: 2.5rem;
@@ -38,7 +34,6 @@
   }
 }
 
-/* Media query para dispositivos con pantalla mediana (de 481px a 1024px) */
 @media screen and (min-width: 481px) and (max-width: 1024px) {
   .currencyExchange__buttonPair {
     font-size: 0.8125rem;
