@@ -5,6 +5,7 @@ import HistoricPrice from "./currency/historicPrice/HistoricPrice";
 import { NextPage } from "next";
 import DailyTrend from "./currency/dailyTrend/DailyTrend";
 import styles from "./HomeComponent.module.css";
+import Chart from "./chart/Chart";
 
 interface CurrencyHistory {
   date: string;
@@ -34,6 +35,9 @@ const HomeComponent: NextPage<HomePageProps> = ({ currencyHistory, pair }) => {
           <div className={styles.Historic_Daily_Components}>
             <HistoricPrice currencyHistory={currencyHistory} />
             <DailyTrend currencyHistory={currencyHistory} />
+          </div>
+          <div className={styles.charComponent}>
+            <Chart currencyHistory={currencyHistory}/>
           </div>
         </div>
       ) : (
