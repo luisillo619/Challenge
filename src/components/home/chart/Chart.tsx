@@ -8,6 +8,7 @@ import {
   ReferenceLine,
   ResponsiveContainer,
   Brush,
+  CartesianGrid,
 } from "recharts";
 import moment from "moment";
 
@@ -45,10 +46,6 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
     close: parseFloat(entry.close),
   }));
 
-
-
-
-
   const renderMonthLines = () => {
     const monthIndices: number[] = [];
     let lastMonth = moment(formattedCurrencyHistory[0].date).month();
@@ -56,12 +53,14 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
     formattedCurrencyHistory.forEach((entry, index) => {
       const currentMonth = moment(entry.date).month();
       if (currentMonth !== lastMonth) {
-        monthIndices.push(index - 1);
+        monthIndices.push(index);
         lastMonth = currentMonth;
       }
     });
 
-    monthIndices.push(formattedCurrencyHistory.length - 1);
+    if (monthIndices[0] !== 0) {
+      monthIndices.unshift(0);
+    }
 
     return monthIndices.map((index) => {
       const month = moment(formattedCurrencyHistory[index].date).format("MMM");
@@ -71,40 +70,62 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
             x={formattedCurrencyHistory[index].date}
             stroke="#777777"
             label={{
-              position: "top",
+              position: "bottom",
               value: month,
               fill: "#FFFFFF",
-              dy: 20,
+              dy: 5,
             }}
           />
         </Fragment>
       );
     });
   };
-  
+
+  const renderLastPointReferenceLine = () => {
+    const lastPoint =
+      formattedCurrencyHistory[formattedCurrencyHistory.length - 1];
+    return <ReferenceLine y={lastPoint.close} stroke="#776526" />;
+  };
 
   return (
-    <div style={{ height: 300, background: "black", width: "100%" }}>
+    <div style={{ height: 320, background: "black", width: "100%" }}>
       <ResponsiveContainer>
-      <LineChart
+        <LineChart
           data={formattedCurrencyHistory}
           margin={{
             top: 5,
             right: 20,
             left: 20,
-            bottom: 20,
+            bottom: 40,
           }}
         >
-          <XAxis dataKey="date" hide  />
-          <YAxis domain={["dataMin", "dataMax"]} orientation="right" />
+          <XAxis dataKey="date" hide />
+          <YAxis
+            domain={["dataMin", "dataMax"]}
+            orientation="right"
+            tickLine={false}
+            axisLine={false}
+          />
+          <CartesianGrid
+            horizontal={true}
+            vertical={false}
+            strokeDasharray="3 3"
+          />
           <Tooltip content={<CustomTooltip />} />
           {renderMonthLines()}
-          <Line type="monotone" dataKey="close" stroke="#766526" />
+          {renderLastPointReferenceLine()}
+          <Line
+            type="monotone"
+            dataKey="close"
+            stroke="#766526"
+            isAnimationActive={false}
+          />
           <Brush
             dataKey="date"
-            height={8}
+            height={12}
             stroke="#8884d8"
             travellerWidth={15}
+            y={300}
           />
         </LineChart>
       </ResponsiveContainer>

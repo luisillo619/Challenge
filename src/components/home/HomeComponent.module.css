@@ -6,7 +6,7 @@
 }
 
 .homeComponent__content {
-  width: 93%;
+  width: 95%;
   max-width: 1200px;
   height: 100%;
  
@@ -20,8 +20,11 @@
 
 }
 
+.chartComponent{
+  
+}
+
 .Historic_Daily_Components{
   display: flex;
   gap: 1.5rem;
- 
 }
