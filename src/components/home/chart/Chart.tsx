@@ -28,11 +28,14 @@ interface ChartComponentProps {
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const date = moment(payload[0].payload.date).format("MMM D");
-    const closingPrice = payload[0].value;
+    const closingPrice = payload[0].payload.close;
+    const openingPrice = payload[0].payload.open;
+
     return (
       <div className="custom-tooltip">
         <p className="label">{`Date: ${date}`}</p>
         <p className="label">{`Close: ${closingPrice}`}</p>
+        <p className="label">{`Open: ${openingPrice}`}</p>
       </div>
     );
   }
@@ -53,7 +56,6 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
       })),
     [reversedCurrencyHistory]
   );
-  
 
   const monthLines = useMemo(() => {
     const monthIndices: number[] = [];
@@ -156,7 +158,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
             orientation="right"
             tickFormatter={(tick) => tick.toFixed(2)}
             ticks={yAxisTicks}
-            style={{ fontSize: '10px' }}
+            style={{ fontSize: "10px" }}
             width={20}
           />
           <CartesianGrid horizontal={true} vertical={false} />
@@ -169,12 +171,12 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ currencyHistory }) => {
             isAnimationActive={false}
             dot={false}
           />
-           {/* <Brush
+          {/* <Brush
             dataKey="date"
             height={12}
             stroke="#8884d8"
             travellerWidth={15}
-            y={450}
+            y={200}
           /> */}
           <ReferenceLine
             x={
