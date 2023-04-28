@@ -131,12 +131,12 @@ const WebSocketComponent: React.FC<WebSocketComponentProps> = ({ pair }) => {
       }
     };
 
-    updateDateFormat(); // actualiza el formato de fecha cuando el componente se monta
+    updateDateFormat(); 
 
-    mediaQuery.addEventListener("change", updateDateFormat); // actualiza el formato de fecha cuando cambia el media query
+    mediaQuery.addEventListener("change", updateDateFormat); 
 
     return () => {
-      mediaQuery.removeEventListener("change", updateDateFormat); // elimina el listener cuando el componente se desmonta
+      mediaQuery.removeEventListener("change", updateDateFormat); 
     };
   }, [lastResponse]);
 
